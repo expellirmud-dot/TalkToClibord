@@ -1,0 +1,9 @@
+# Optional feature dependencies
+
+keyboard
+mss
+PyAudio
+pygame
+SpeechRecognition
+vosk
+openai-whisper
