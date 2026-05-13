@@ -36,6 +36,17 @@ def test_declared_runtime_dependencies_are_importable() -> None:
         "google-genai": "google.genai",
         "edge-tts": "edge_tts",
         "websocket-client": "websocket",
+        "pillow": "PIL",
+        "keyboard": "keyboard",
+        "mss": "mss",
+        "numpy": "numpy",
+        "pyaudio": "pyaudio",
+        "pygame": "pygame",
+        "pyperclip": "pyperclip",
+        "speechrecognition": "speech_recognition",
+        "sumy": "sumy",
+        "vosk": "vosk",
+        "openai-whisper": "whisper",
     }
 
     declared = _declared_requirements()
