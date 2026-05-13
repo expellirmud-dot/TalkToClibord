@@ -10,6 +10,18 @@ websocket-client>=0.59.0
 # Google Generative AI SDK for direct API calls (new package, replaces deprecated google-generativeai)
 google-genai>=0.3.0
 
+# UI and media runtime dependencies used in production imports
+Pillow
+keyboard
+mss
+numpy
+PyAudio
+pygame
+pyperclip
+SpeechRecognition
+sumy
+vosk
+openai-whisper
+
 # Note: pathlib is part of Python 3.4+ standard library, no need to install
 # Note: tkinter is part of Python standard library, no need to install
-# Note: PIL/Pillow should be installed separately if not present
