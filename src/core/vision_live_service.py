@@ -1,12 +1,21 @@
 # vision_live_service.py (V4.6 - Persistent Connection)
-import asyncio, threading, pyaudio, io, base64, PIL.Image, time
+import asyncio, threading, io, base64, PIL.Image, time
 from google.genai import types
 from src.utils.vision_utils import sys_log
 
 class VisionLiveService:
     def __init__(self, client, model_id, instr):
         self.client, self.model_id, self.instr = client, model_id, instr
-        self.is_running, self.p = False, pyaudio.PyAudio()
+        self.is_running = False
+        try:
+            import pyaudio
+        except ImportError as e:
+            raise RuntimeError(
+                "Optional dependency 'pyaudio' is required for live audio. "
+                "Install requirements-optional.txt to enable this feature."
+            ) from e
+        self._pyaudio = pyaudio
+        self.p = pyaudio.PyAudio()
         self.chunk, self.send_rate, self.receive_rate = 1024, 16000, 24000
         self.audio_in_queue, self.out_queue = None, None
 
@@ -71,7 +80,7 @@ class VisionLiveService:
         sys_log("Live", "🎤 เริ่มส่งเสียงไมค์")
         
         try:
-            stream = await asyncio.to_thread(self.p.open, format=pyaudio.paInt16, channels=1, rate=self.send_rate, input=True, frames_per_buffer=self.chunk)
+            stream = await asyncio.to_thread(self.p.open, format=self._pyaudio.paInt16, channels=1, rate=self.send_rate, input=True, frames_per_buffer=self.chunk)
             chunks_sent = 0
             while self.is_running:
                 data = await asyncio.to_thread(stream.read, self.chunk, exception_on_overflow=False)
@@ -98,7 +107,7 @@ class VisionLiveService:
         sys_log("Live", "🔊 เริ่มเล่นเสียง AI")
         
         try:
-            stream = self.p.open(format=pyaudio.paInt16, channels=1, rate=self.receive_rate, output=True)
+            stream = self.p.open(format=self._pyaudio.paInt16, channels=1, rate=self.receive_rate, output=True)
             chunks_played = 0
             
             while self.is_running:

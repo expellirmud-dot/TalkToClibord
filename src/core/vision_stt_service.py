@@ -4,7 +4,6 @@
 import threading
 import time
 import pyperclip
-import speech_recognition as sr
 from typing import Callable, Optional, Literal
 from queue import Queue, Empty
 import sys
@@ -40,6 +39,13 @@ class VisionSTTService:
                  on_status_callback: Optional[Callable[[str], None]] = None,
                  engine: Literal["google", "whisper", "vosk"] = "google",
                  whisper_model: str = "small"):
+        try:
+            import speech_recognition as sr
+        except ImportError as e:
+            raise RuntimeError(
+                "Optional dependency 'speech_recognition' is required for STT. "
+                "Install requirements-optional.txt to enable this feature."
+            ) from e
         
         self.recognizer = sr.Recognizer()
         self.microphone = sr.Microphone()
