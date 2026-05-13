@@ -14,3 +14,9 @@ from src.config.models import (
     get_best_model_for_tokens,
 )
 from src.config.pricing import MODEL_PRICING
+
+
+# Legacy API aliases kept stable for older runtime imports.
+INSTR_VISION = INSTR_VISION_ULTIMATE
+get_model_by_identity = get_model_for_identity
+get_model_config = get_model_config_for_identity
