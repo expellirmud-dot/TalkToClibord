@@ -1,0 +1,44 @@
+.env
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local runtime data and generated evidence
+*.db
+*.db-*
+*.log
+*.log-*
+output/
+ledger/
+data/*.db
+
+# Local chaos/deployment/test artifacts
+chaos_data_*/
+deploy_test_*/
+test_ledger_*/
+test_ledger_data/
+tests/temp_ledger.log*
+
+venv_build/
+*.rar
+*.lnk
+vault.json
+outputs/
+backup/
+*.png
+.vscode
+.windsurf
+
+all Code/
+automation_profile/
+lite/
+New folder (2)/
+tools/
+venv_build/
+outputs/
+data/cache/
+data/logs/
+data/handoffs/
+sounds/
+*.bak
+* copy.py

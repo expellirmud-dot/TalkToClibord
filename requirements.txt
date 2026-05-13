@@ -1,0 +1,15 @@
+# J.A.V.I.S. V6.0.0 - Modular V3.0 Dependencies
+# Core dependencies for the AI Assistant system
+
+# Voice synthesis for Jamie's TTS system
+edge-tts>=6.1.0
+
+# WebSocket client for Gemini Web integration
+websocket-client>=0.59.0
+
+# Google Generative AI SDK for direct API calls (new package, replaces deprecated google-generativeai)
+google-genai>=0.3.0
+
+# Note: pathlib is part of Python 3.4+ standard library, no need to install
+# Note: tkinter is part of Python standard library, no need to install
+# Note: PIL/Pillow should be installed separately if not present
