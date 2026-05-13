@@ -56,7 +56,12 @@ def test_declared_runtime_dependencies_are_importable(dependency: str, import_na
     declared = _declared_requirements()
     assert dependency in declared, f"{dependency} must be declared in requirements.txt"
 
-    if importlib.util.find_spec(import_name) is None:
+    try:
+        spec = importlib.util.find_spec(import_name)
+    except ModuleNotFoundError:
+        spec = None
+
+    if spec is None:
         pytest.skip(
             f"Declared dependency is not installed in this environment: {dependency} -> {import_name}"
         )
