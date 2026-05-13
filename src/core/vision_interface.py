@@ -1,5 +1,5 @@
 #  (V6.0.4 - Hardened Edition - Optimized by Vision)
-import sys, os, re, time, threading, hashlib, pyperclip, signal, keyboard, ast, json
+import sys, os, re, time, threading, hashlib, pyperclip, signal, ast, json
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
 from PIL import Image, ImageGrab
@@ -113,11 +113,20 @@ class ProjectJAVIS:
     def _setup_stt_hotkeys(self):
         """Setup keyboard hotkeys for STT (Alt+X toggle, F9 quick)"""
         try:
+            try:
+                import keyboard
+            except ImportError as e:
+                raise RuntimeError(
+                    "Optional dependency 'keyboard' is required for STT hotkeys. "
+                    "Install requirements-optional.txt to enable this feature."
+                ) from e
             # Alt+X: Toggle continuous STT mode
             keyboard.add_hotkey('alt+x', self._toggle_stt_mode)
             # F9: Quick STT mode (listen once)
             keyboard.add_hotkey('f9', self._quick_stt_mode)
             sys_log("STT", "Hotkeys registered: Alt+X (toggle), F9 (quick)")
+        except RuntimeError:
+            raise
         except Exception as e:
             sys_log("STT", f"Hotkey registration error: {e}", "ERROR")
     

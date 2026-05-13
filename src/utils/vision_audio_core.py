@@ -2,7 +2,6 @@
 import os
 import asyncio
 import edge_tts
-import pygame
 import threading
 import time
 import re
@@ -57,9 +56,11 @@ class VisionAudioCore:
         # 🎙️ ตั้งค่าเสียง Premwadee
         self.provider = EdgeTTSProvider()
         self.default_voice = "th-TH-PremwadeeNeural"
+        self._pygame = None
         
         try:
-            pygame.mixer.init()
+            self._pygame = self._load_pygame()
+            self._pygame.mixer.init()
             self.audio_available = True
             sys_log("AudioCore", "Pygame mixer readyข่ะ!")
         except Exception as e:
@@ -152,7 +153,7 @@ class VisionAudioCore:
                 audio_buffer.seek(0)
                 if audio_buffer.getbuffer().nbytes > 0:
                     # 🔊 ใช้ pygame Sound เล่นจาก buffer (ไม่ใช่ music ซึ่งต้องการไฟล์)
-                    sound = pygame.mixer.Sound(file=audio_buffer)
+                    sound = self._pygame.mixer.Sound(file=audio_buffer)
                     channel = sound.play()
                     
                     # รอจนเสียงจบ (ใช้ channel.get_busy() แทน)
@@ -167,10 +168,22 @@ class VisionAudioCore:
     def stop(self):
         """[IN-MEMORY] หยุดทันทีข่ะ!"""
         # หยุดทุกเสียงที่กำลังเล่น (Sound ทั้งหมด)
-        pygame.mixer.stop()
+        if self._pygame:
+            self._pygame.mixer.stop()
         # ล้างคิว
         with self.tts_queue.mutex:
             self.tts_queue.queue.clear()
+
+    @staticmethod
+    def _load_pygame():
+        try:
+            import pygame
+            return pygame
+        except ImportError as e:
+            raise RuntimeError(
+                "Optional dependency 'pygame' is required for audio playback. "
+                "Install requirements-optional.txt to enable this feature."
+            ) from e
 
 # Singleton Instance
 vision_audio = VisionAudioCore()
