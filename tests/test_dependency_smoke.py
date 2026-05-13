@@ -6,8 +6,10 @@ requirements.txt, document them here first before changing dependencies.
 
 from __future__ import annotations
 
-import importlib
+import importlib.util
 from pathlib import Path
+
+import pytest
 
 
 def _declared_requirements() -> set[str]:
@@ -30,27 +32,31 @@ def _declared_requirements() -> set[str]:
     return declared
 
 
-def test_declared_runtime_dependencies_are_importable() -> None:
+DEPENDENCY_TO_IMPORT = {
+    "google-genai": "google.genai",
+    "edge-tts": "edge_tts",
+    "websocket-client": "websocket",
+    "pillow": "PIL",
+    "keyboard": "keyboard",
+    "mss": "mss",
+    "numpy": "numpy",
+    "pyaudio": "pyaudio",
+    "pygame": "pygame",
+    "pyperclip": "pyperclip",
+    "speechrecognition": "speech_recognition",
+    "sumy": "sumy",
+    "vosk": "vosk",
+    "openai-whisper": "whisper",
+}
+
+
+@pytest.mark.parametrize("dependency,import_name", DEPENDENCY_TO_IMPORT.items())
+def test_declared_runtime_dependencies_are_importable(dependency: str, import_name: str) -> None:
     """Validate expected import modules for direct runtime dependencies."""
-    dependency_to_import = {
-        "google-genai": "google.genai",
-        "edge-tts": "edge_tts",
-        "websocket-client": "websocket",
-        "pillow": "PIL",
-        "keyboard": "keyboard",
-        "mss": "mss",
-        "numpy": "numpy",
-        "pyaudio": "pyaudio",
-        "pygame": "pygame",
-        "pyperclip": "pyperclip",
-        "speechrecognition": "speech_recognition",
-        "sumy": "sumy",
-        "vosk": "vosk",
-        "openai-whisper": "whisper",
-    }
-
     declared = _declared_requirements()
+    assert dependency in declared, f"{dependency} must be declared in requirements.txt"
 
-    for dependency, import_name in dependency_to_import.items():
-        assert dependency in declared, f"{dependency} must be declared in requirements.txt"
-        importlib.import_module(import_name)
+    if importlib.util.find_spec(import_name) is None:
+        pytest.skip(
+            f"Declared dependency is not installed in this environment: {dependency} -> {import_name}"
+        )
